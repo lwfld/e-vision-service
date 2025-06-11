@@ -1,0 +1,46 @@
+---
+import HuaweiLogo from "@/assets/partners/huawei.png";
+import EVELogo from "@/assets/partners/eve.png";
+import CATLLogo from "@/assets/partners/catl.png";
+import SVoltLogo from "@/assets/partners/svolt.png";
+
+const partners = [
+  {
+    src: CATLLogo,
+    alt: "CATL-宁德时代",
+    class: "w-48 h-48",
+  },
+  {
+    src: SVoltLogo,
+    alt: "SVolt-蜂巢能源",
+    class: "w-48 h-48",
+  },
+  {
+    src: EVELogo,
+    alt: "EVE-亿纬动力",
+    class: "w-56 h-48",
+  },
+  {
+    src: HuaweiLogo,
+    alt: "Huawei-华为",
+    class: "w-64 h-48", // 比如希望这个更宽
+  },
+];
+---
+
+<div class="mt-24">
+  <h2 class="text-center text-slate-500">Partners</h2>
+  <div class="flex flex-wrap gap-8 justify-center items-center">
+    {
+      partners.map((p, idx) => (
+        <div class={`flex items-center justify-center ${p.class}`} key={idx}>
+          <img
+            src={typeof p.src === "string" ? p.src : (p.src.src ?? p.src)}
+            alt={p.alt}
+            class="object-contain w-full h-full"
+          />
+        </div>
+      ))
+    }
+  </div>
+</div>
