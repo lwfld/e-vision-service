@@ -120,6 +120,7 @@ export const ui = {
       },
     },
     footer: {
+      profile: "Unternehmensprofil (PDF)",
       blurb:
         "Engineering, Industrieservices und Logistik in Deutschland – One-Stop-Lösungen aus einer Hand, seit 2017.",
       services: "Leistungen",
@@ -267,6 +268,7 @@ export const ui = {
       },
     },
     footer: {
+      profile: "Company Profile (PDF)",
       blurb:
         "Engineering, industrial services and logistics in Germany – one-stop solutions from a single source, since 2017.",
       services: "Services",
@@ -413,6 +415,7 @@ export const ui = {
       },
     },
     footer: {
+      profile: "公司简介（PDF）",
       blurb: "立足德国的工程、工业服务与物流——2017 年至今，一站式交付。",
       services: "业务领域",
       company: "公司",
