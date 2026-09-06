@@ -1,0 +1,85 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Container from "@/components/container.astro";
+import Sectionhead from "@/components/sectionhead.astro";
+import Partners from "@/components/partners.astro";
+import Cta from "@/components/cta.astro";
+import { Icon } from "astro-icon/components";
+import { site } from "@/config/site";
+import { langPaths, useLang, useTranslations } from "@/i18n/utils";
+
+export function getStaticPaths() {
+  return langPaths;
+}
+
+const lang = useLang(Astro.params.lang);
+const t = useTranslations(lang);
+
+const valueIcons = ["lucide:users", "lucide:cpu", "lucide:zap"];
+---
+
+<Layout title={t.meta.about.title} description={t.meta.about.desc} lang={lang}>
+  <Container>
+    <div class="pt-16">
+      <Sectionhead title={t.about.title} desc={t.about.desc} />
+    </div>
+
+    <div class="mx-auto mt-16 grid max-w-5xl gap-12 lg:grid-cols-[3fr_2fr]">
+      <div>
+        <h2 class="text-2xl font-bold text-night-950 lg:text-3xl">
+          {t.about.introTitle}
+        </h2>
+        <p class="mt-4 text-lg leading-relaxed text-slate-600">{t.about.intro1}</p>
+        <p class="mt-4 text-lg leading-relaxed text-slate-600">{t.about.intro2}</p>
+      </div>
+
+      <aside class="border border-night-100 bg-night-50 p-6">
+        <p
+          class="font-display text-4xl font-bold uppercase text-accent-600">
+          {site.founded}
+        </p>
+        <div class="mt-6 space-y-6">
+          {
+            t.about.facts.map((fact) => (
+              <div class="border-t border-night-100 pt-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.15em] text-accent-600">
+                  {fact.label}
+                </p>
+                <h3 class="mt-1 font-semibold text-night-950">{fact.title}</h3>
+                <p class="mt-1 text-sm leading-relaxed text-slate-600">
+                  {fact.desc}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </aside>
+    </div>
+
+    <div class="mx-auto mt-20 max-w-5xl">
+      <h2 class="text-center text-2xl font-bold text-night-950 lg:text-3xl">
+        {t.about.valuesTitle}
+      </h2>
+      <div class="mt-10 grid gap-6 sm:grid-cols-3">
+        {
+          t.about.values.map((value, i) => (
+            <div class="border border-night-100 bg-white p-6 shadow-sm">
+              <div class="flex h-10 w-10 items-center justify-center bg-accent-600">
+                <Icon name={valueIcons[i]} class="h-5 w-5 text-white" />
+              </div>
+              <h3 class="mt-4 text-lg font-semibold text-night-950">
+                {value.title}
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                {value.desc}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Container>
+
+  <Partners lang={lang} />
+  <Cta lang={lang} />
+</Layout>

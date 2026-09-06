@@ -1,0 +1,114 @@
+---
+import { getCollection } from "astro:content";
+import { Picture } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import Layout from "@/layouts/Layout.astro";
+import Container from "@/components/container.astro";
+import Cta from "@/components/cta.astro";
+import { localePath, useLang, useTranslations } from "@/i18n/utils";
+import { splitEntryId, getServices, entryKey } from "@/i18n/content";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("cases", ({ data }) => !data.draft);
+  return entries.map((entry) => {
+    const { lang, key } = splitEntryId(entry.id);
+    return { params: { lang, slug: key }, props: { entry } };
+  });
+}
+
+const { entry } = Astro.props;
+const lang = useLang(Astro.params.lang);
+const t = useTranslations(lang);
+const { Content } = await entry.render();
+
+const services = await getServices(lang);
+const relatedServices = services.filter((s) =>
+  entry.data.services.includes(entryKey(s)),
+);
+
+const facts = [
+  { label: t.cases.client, value: entry.data.client },
+  { label: t.cases.sector, value: entry.data.sector },
+  { label: t.cases.location, value: entry.data.location },
+];
+---
+
+<Layout title={entry.data.title} description={entry.data.summary} lang={lang}>
+  <section class="bg-night-950">
+    <Container>
+      <div class="max-w-3xl py-16 md:py-20">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-accent-300">
+          {entry.data.sector}
+        </p>
+        <h1 class="mt-4 text-3xl font-bold tracking-tight text-white lg:text-5xl">
+          {entry.data.title}
+        </h1>
+        <p class="mt-4 text-lg text-night-200">{entry.data.summary}</p>
+      </div>
+    </Container>
+  </section>
+
+  <Container>
+    <div class="mx-auto mt-12 grid max-w-5xl gap-12 lg:grid-cols-[2fr_1fr]">
+      <div>
+        <div class="overflow-hidden">
+          <Picture
+            src={entry.data.cover}
+            alt={entry.data.title}
+            widths={[800, 1400]}
+            sizes="(max-width: 1024px) 100vw, 800px"
+            format="avif"
+            class="w-full object-cover"
+          />
+        </div>
+        <div
+          class="prose prose-slate mt-10 max-w-none prose-headings:text-night-950">
+          <Content />
+        </div>
+        <a
+          href={localePath(lang, "/cases")}
+          class="mt-10 inline-flex items-center gap-2 font-semibold text-accent-600 hover:text-accent-500">
+          <Icon name="lucide:arrow-left" class="h-4 w-4" />
+          {t.cases.back}
+        </a>
+      </div>
+
+      <aside class="space-y-6">
+        <div class="border border-night-100 bg-night-50 p-6">
+          <dl class="space-y-4">
+            {
+              facts.map((f) => (
+                <div>
+                  <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    {f.label}
+                  </dt>
+                  <dd class="mt-1 font-medium text-night-950">{f.value}</dd>
+                </div>
+              ))
+            }
+            <div>
+              <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                {t.cases.services}
+              </dt>
+              <dd class="mt-2 flex flex-wrap gap-2">
+                {
+                  relatedServices.map((s) => (
+                    <a
+                      href={localePath(lang, `/services/${entryKey(s)}`)}
+                      class="bg-accent-600 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-accent-500">
+                      {s.data.title}
+                    </a>
+                  ))
+                }
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </aside>
+    </div>
+  </Container>
+
+  <div class="mt-20">
+    <Cta lang={lang} />
+  </div>
+</Layout>

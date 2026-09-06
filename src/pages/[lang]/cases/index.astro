@@ -1,0 +1,31 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Container from "@/components/container.astro";
+import Sectionhead from "@/components/sectionhead.astro";
+import CaseCard from "@/components/case-card.astro";
+import Cta from "@/components/cta.astro";
+import { langPaths, useLang, useTranslations } from "@/i18n/utils";
+import { getCases } from "@/i18n/content";
+
+export function getStaticPaths() {
+  return langPaths;
+}
+
+const lang = useLang(Astro.params.lang);
+const t = useTranslations(lang);
+const cases = await getCases(lang);
+---
+
+<Layout title={t.meta.cases.title} description={t.meta.cases.desc} lang={lang}>
+  <Container>
+    <div class="pt-16">
+      <Sectionhead kicker={t.cases.kicker} title={t.cases.title} desc={t.cases.desc} />
+    </div>
+    <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {cases.map((entry) => <CaseCard lang={lang} entry={entry} />)}
+    </div>
+  </Container>
+  <div class="mt-16">
+    <Cta lang={lang} />
+  </div>
+</Layout>

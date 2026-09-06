@@ -1,55 +1,72 @@
 ---
 import { Picture } from "astro:assets";
-import heroImage from "@/assets/hero.png";
-import Link from "@/components/ui/link.astro";
-import { Icon } from "astro-icon/components";
+import heroImage from "@/assets/photos/hero.png";
+import Container from "@/components/container.astro";
+import type { Lang } from "@/i18n/ui";
+import { localePath, useTranslations } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 ---
 
-<main
-  class="grid lg:grid-cols-2 place-items-center pt-16 pb-8 md:pt-12 md:pb-24">
-  <!-- <div class="py-6 md:order-1 hidden md:block">
-    <Picture
-      src={heroImage}
-      alt="Astronaut in the air"
-      widths={[200, 400, 600]}
-      sizes="(max-width: 800px) 100vw, 620px"
-      loading="eager"
-      format="avif"
-    />
-  </div> -->
-  <div>
-    <h1
-      class="text-5xl lg:text-6xl xl:text-7xl font-bold lg:tracking-tight xl:tracking-tighter">
-      Your Reliable Solution Provider for Energy & Industrial Services
-    </h1>
-    <p class="text-lg mt-4 text-slate-600 max-w-xl">
-      E-Vision GmbH is a diversified company that demonstrates exceptional
-      capabilities in energy-related fields and industrial services. With
-      extensive industry experience, a professional team, and innovative
-      concepts, we provide one-stop solutions for our clients, meeting the
-      diverse needs of different customers in the energy and industrial sectors.
-    </p>
-    <!-- <div class="mt-6 flex flex-col sm:flex-row gap-3">
-      <Link
-        href="#"
-        href="https://web3templates.com/templates/astroship-starter-website-template-for-astro"
-        target="_blank"
-        class="flex gap-1 items-center justify-center"
-        rel="noopener">
-        <Icon class="text-white w-5 h-5" name="bx:bxs-cloud-download" />
-
-        Download for Free
-      </Link>
-      <Link
-        size="lg"
-        style="outline"
-        rel="noopener"
-        href="https://github.com/surjithctly/astroship"
-        class="flex gap-1 items-center justify-center"
-        target="_blank">
-        <Icon class="text-black w-4 h-4" name="bx:bxl-github" />
-        GitHub Repo
-      </Link>
-    </div> -->
+<section class="relative isolate overflow-hidden bg-night-950">
+  <Picture
+    src={heroImage}
+    alt=""
+    widths={[800, 1400, 2200]}
+    sizes="100vw"
+    loading="eager"
+    format="avif"
+    class="absolute inset-0 -z-20 h-full w-full object-cover opacity-25"
+  />
+  <div
+    class="absolute inset-0 -z-10 bg-gradient-to-r from-night-950 via-night-950/85 to-night-900/50">
   </div>
-</main>
+
+  <Container>
+    <div class="max-w-3xl py-24 md:py-32 lg:py-36">
+      <p
+        class="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-accent-300">
+        <span class="h-px w-8 bg-accent-300"></span>
+        {t.hero.kicker}
+      </p>
+      <h1
+        class="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+        {t.hero.title}
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-night-200">
+        {t.hero.lead}
+      </p>
+      <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+        <a
+          href={localePath(lang, "/contact")}
+          class="bg-accent-500 px-6 py-3 text-center font-semibold text-white transition hover:bg-accent-400">
+          {t.hero.ctaPrimary}
+        </a>
+        <a
+          href="#services"
+          class="border-2 border-white/30 px-6 py-3 text-center font-semibold text-white transition hover:border-white hover:bg-white/10">
+          {t.hero.ctaSecondary}
+        </a>
+      </div>
+    </div>
+
+    <div
+      class="grid grid-cols-2 gap-8 border-t border-white/10 py-10 md:grid-cols-4">
+      {
+        t.stats.map((stat) => (
+          <div>
+            <p class="font-display text-3xl font-bold text-accent-300 md:text-4xl">
+              {stat.value}
+            </p>
+            <p class="mt-1 text-sm text-night-300">{stat.label}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Container>
+</section>

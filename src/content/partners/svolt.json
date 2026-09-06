@@ -1,0 +1,7 @@
+{
+  "name": "SVOLT",
+  "alt": "SVOLT 蜂巢能源",
+  "logo": "../../assets/partners/svolt.png",
+  "order": 4,
+  "shape": "stacked"
+}

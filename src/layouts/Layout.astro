@@ -1,63 +1,66 @@
 ---
 import { SEO } from "astro-seo";
 import Footer from "@/components/footer.astro";
-import Navbar from "@/components/navbar/navbar.astro";
+import Navbar from "@/components/navbar.astro";
 import "@fontsource-variable/inter/index.css";
-import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/oswald";
 import "../styles/global.css";
+import { site } from "@/config/site";
+import type { Lang } from "@/i18n/ui";
+import { htmlLang, langs, switchLangPath } from "@/i18n/utils";
 
 export interface Props {
   title: string;
+  description: string;
+  lang: Lang;
 }
 
+const { title, description, lang } = Astro.props;
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImage = new URL("/opengraph.jpg", Astro.site).toString();
 
-const resolvedImageWithDomain = new URL(
-  "/opengraph.jpg",
-  Astro.site,
-).toString();
-
-const { title } = Astro.props;
-
-const makeTitle = title ? title : "Title under Construction";
+const alternates = langs.map((l) => ({
+  hrefLang: htmlLang[l],
+  href: new URL(switchLangPath(Astro.url.pathname, l), Astro.site).toString(),
+}));
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={htmlLang[lang]}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-
-    <!-- <link rel="preload" as="image" href={src} alt="Hero" /> -->
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(switchLangPath(Astro.url.pathname, "en"), Astro.site).toString()}
+    />
     <SEO
-      title="E-Vision GmbH | Innovative Energy and Industrial Solutions"
-      description="E-Vision GmbH is a diversified company specializing in exceptional energy-related services and industrial solutions. With years of industry experience, a professional team, and innovative approaches, we deliver one-stop solutions tailored to the diverse needs of clients in the energy and industrial sectors."
+      title={title}
+      titleTemplate={`%s | ${site.name}`}
+      titleDefault={site.name}
+      description={description}
       canonical={canonicalURL}
+      languageAlternates={alternates}
       openGraph={{
         basic: {
           url: canonicalURL,
           type: "website",
-          title: "E-Vision GmbH | Energy & Industrial Solutions Provider",
-          image: resolvedImageWithDomain, // 建议配一张1200x630大横图，路径如 "/opengraph.jpg"
+          title: `${title} | ${site.name}`,
+          image: ogImage,
         },
         image: {
-          alt: "E-Vision GmbH – Energy and Industrial Solutions Overview",
+          alt: site.name,
         },
       }}
     />
   </head>
-  <body>
-    <Navbar />
+  <body class="bg-white text-night-950 antialiased">
+    <Navbar lang={lang} />
     <slot />
-    <Footer />
-    <style is:global>
-      /* Improve Page speed */
-      /* https://css-tricks.com/almanac/properties/c/content-visibility/ */
-      img {
-        content-visibility: auto;
-      }
-    </style>
+    <Footer lang={lang} />
   </body>
 </html>

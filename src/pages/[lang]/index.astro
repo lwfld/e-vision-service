@@ -1,0 +1,24 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/hero.astro";
+import ServicesGrid from "@/components/services-grid.astro";
+import CasesPreview from "@/components/cases-preview.astro";
+import Partners from "@/components/partners.astro";
+import Cta from "@/components/cta.astro";
+import { langPaths, useLang, useTranslations } from "@/i18n/utils";
+
+export function getStaticPaths() {
+  return langPaths;
+}
+
+const lang = useLang(Astro.params.lang);
+const t = useTranslations(lang);
+---
+
+<Layout title={t.meta.home.title} description={t.meta.home.desc} lang={lang}>
+  <Hero lang={lang} />
+  <ServicesGrid lang={lang} />
+  <CasesPreview lang={lang} />
+  <Partners lang={lang} />
+  <Cta lang={lang} />
+</Layout>

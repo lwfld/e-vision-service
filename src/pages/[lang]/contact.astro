@@ -1,0 +1,52 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Container from "@/components/container.astro";
+import Sectionhead from "@/components/sectionhead.astro";
+import Contactform from "@/components/contactform.astro";
+import { Icon } from "astro-icon/components";
+import { site, addressLine } from "@/config/site";
+import { langPaths, useLang, useTranslations } from "@/i18n/utils";
+
+export function getStaticPaths() {
+  return langPaths;
+}
+
+const lang = useLang(Astro.params.lang);
+const t = useTranslations(lang);
+---
+
+<Layout title={t.meta.contact.title} description={t.meta.contact.desc} lang={lang}>
+  <Container>
+    <div class="pt-16">
+      <Sectionhead title={t.contact.title} desc={t.contact.desc} />
+    </div>
+
+    <div class="mx-auto mt-16 grid max-w-4xl gap-10 md:grid-cols-2">
+      <div>
+        <h2 class="text-2xl font-semibold text-night-950">
+          {t.contact.infoTitle}
+        </h2>
+        <p class="mt-3 leading-relaxed text-slate-600">{t.contact.infoText}</p>
+        <div class="mt-6 space-y-3">
+          <div class="flex items-start gap-2 text-slate-700">
+            <Icon name="uil:map-marker" class="mt-1 h-4 w-4 shrink-0 text-accent-600" />
+            <span>{addressLine}</span>
+          </div>
+          <div class="flex items-start gap-2 text-slate-700">
+            <Icon name="uil:envelope" class="mt-1 h-4 w-4 shrink-0 text-accent-600" />
+            <a href={`mailto:${site.email}`} class="hover:text-night-950">
+              {site.contactPerson} · {site.email}
+            </a>
+          </div>
+          <div class="flex items-start gap-2 text-slate-700">
+            <Icon name="uil:file-check-alt" class="mt-1 h-4 w-4 shrink-0 text-accent-600" />
+            <span>{t.contact.registerLabel}: {site.registerNo}</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <Contactform lang={lang} />
+      </div>
+    </div>
+  </Container>
+</Layout>

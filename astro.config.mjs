@@ -6,8 +6,21 @@ import icon from "astro-icon";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://astroship.web3templates.com",
-  integrations: [mdx(), sitemap(), icon()],
+  site: "https://www.e-vision-service.com",
+  integrations: [
+    mdx(),
+    sitemap({
+      i18n: {
+        defaultLocale: "en",
+        locales: {
+          de: "de-DE",
+          en: "en",
+          zh: "zh-CN",
+        },
+      },
+    }),
+    icon(),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

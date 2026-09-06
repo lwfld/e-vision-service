@@ -1,67 +1,73 @@
 ---
 import Button from "./ui/button.astro";
+import type { Lang } from "@/i18n/ui";
+import { useTranslations } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang).contact.form;
+
+const inputClass =
+  "w-full border-2 border-night-100 bg-white px-4 py-3 outline-hidden placeholder:text-slate-400 focus:border-accent-500 focus:ring-4 ring-accent-500/10";
 ---
 
-<!-- To make this contact form work, create your free access key from https://web3forms.com/
-     Then you will get all form submissions in your email inbox. -->
+<!-- Formular-Backend: https://web3forms.com/ – Zusendungen landen im E-Mail-Postfach.
+     TODO: Access-Key im Web3Forms-Dashboard neu generieren (alter Key lag im Git-Verlauf). -->
 <form
   action="https://api.web3forms.com/submit"
   method="POST"
   id="form"
   class="needs-validation"
   novalidate>
-  <!-- <input
-    type="hidden"
-    name="access_key"
-    value="b9e04163-f49b-4d8b-8cf6-1112278455fa" 
-  /> -->
   <input
     type="hidden"
     name="access_key"
     value="a166cdfb-79d4-4607-8e60-931c008fcec9"
   />
-  <!-- Create your free access key from https://web3forms.com/ -->
   <input type="checkbox" class="hidden" style="display:none" name="botcheck" />
   <div class="mb-5">
     <input
       type="text"
-      placeholder="Full Name"
+      placeholder={t.name}
       required
-      class="w-full px-4 py-3 border-2 placeholder:text-gray-800 rounded-md outline-hidden focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100"
+      class={inputClass}
       name="name"
     />
-    <div class="empty-feedback invalid-feedback text-red-400 text-sm mt-1">
-      Please provide your full name.
+    <div class="empty-feedback invalid-feedback mt-1 text-sm text-red-400">
+      {t.errName}
     </div>
   </div>
   <div class="mb-5">
-    <label for="email_address" class="sr-only">Email Address</label><input
+    <label for="email_address" class="sr-only">{t.email}</label>
+    <input
       id="email_address"
       type="email"
-      placeholder="Email Address"
+      placeholder={t.email}
       name="email"
       required
-      class="w-full px-4 py-3 border-2 placeholder:text-gray-800 rounded-md outline-hidden focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100"
+      class={inputClass}
     />
-    <div class="empty-feedback text-red-400 text-sm mt-1">
-      Please provide your email address.
+    <div class="empty-feedback mt-1 text-sm text-red-400">
+      {t.errEmailEmpty}
     </div>
-    <div class="invalid-feedback text-red-400 text-sm mt-1">
-      Please provide a valid email address.
+    <div class="invalid-feedback mt-1 text-sm text-red-400">
+      {t.errEmailInvalid}
     </div>
   </div>
   <div class="mb-3">
     <textarea
       name="message"
       required
-      placeholder="Your Message"
-      class="w-full px-4 py-3 border-2 placeholder:text-gray-800 rounded-md outline-hidden h-36 focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100"
-    ></textarea>
-    <div class="empty-feedback invalid-feedback text-red-400 text-sm mt-1">
-      Please enter your message.
+      placeholder={t.message}
+      class={`${inputClass} h-36`}></textarea>
+    <div class="empty-feedback invalid-feedback mt-1 text-sm text-red-400">
+      {t.errMessage}
     </div>
   </div>
-  <Button type="submit" size="lg" block>Send Message</Button>
+  <Button type="submit" size="lg" block>{t.submit}</Button>
   <div id="result" class="mt-3 text-center"></div>
 </form>
 
@@ -85,7 +91,7 @@ import Button from "./ui/button.astro";
   }
 </style>
 
-<script is:inline>
+<script is:inline define:vars={{ sendingText: t.sending, failedText: t.failed }}>
   const form = document.getElementById("form");
   const result = document.getElementById("result");
 
@@ -100,7 +106,7 @@ import Button from "./ui/button.astro";
     const object = Object.fromEntries(formData);
     const json = JSON.stringify(object);
 
-    result.innerHTML = "Sending...";
+    result.innerHTML = sendingText;
 
     fetch("https://api.web3forms.com/submit", {
       method: "POST",
@@ -113,17 +119,15 @@ import Button from "./ui/button.astro";
       .then(async (response) => {
         let json = await response.json();
         if (response.status == 200) {
-          result.classList.add("text-green-500");
+          result.classList.add("text-green-600");
           result.innerHTML = json.message;
         } else {
-          console.log(response);
           result.classList.add("text-red-500");
-          result.innerHTML = json.message;
+          result.innerHTML = json.message || failedText;
         }
       })
-      .catch((error) => {
-        console.log(error);
-        result.innerHTML = "Something went wrong!";
+      .catch(() => {
+        result.innerHTML = failedText;
       })
       .then(function () {
         form.reset();

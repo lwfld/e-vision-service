@@ -1,17 +1,27 @@
 ---
-import Container from "@/components/container.astro";
-import Cta from "@/components/cta.astro";
-import Features from "@/components/features.astro";
-import Hero from "@/components/hero.astro";
-import Partners from "@/components/partners.astro";
-import Layout from "@/layouts/Layout.astro";
+// Sprachweiche: leitet je nach Browsersprache auf /de/, /en/ oder /zh/ um.
+// Fallback (ohne JavaScript): Meta-Refresh auf /en/.
 ---
 
-<Layout title="E-Vision GmbH">
-  <Container>
-    <Hero />
-    <Features />
-    <Partners />
-    <!-- <Cta /> -->
-  </Container>
-</Layout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content="1;url=/en/" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>E-Vision GmbH</title>
+    <script is:inline>
+      const l = (navigator.language || "en").toLowerCase();
+      const target = l.startsWith("zh") ? "/zh/" : l.startsWith("de") ? "/de/" : "/en/";
+      window.location.replace(target);
+    </script>
+  </head>
+  <body>
+    <p style="font-family: sans-serif; padding: 2rem">
+      <a href="/de/">Deutsch</a> · <a href="/en/">English</a> ·
+      <a href="/zh/">中文</a>
+    </p>
+  </body>
+</html>

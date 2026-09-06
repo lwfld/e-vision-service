@@ -1,0 +1,82 @@
+---
+import Container from "@/components/container.astro";
+import { Astronav, MenuItems, MenuIcon } from "astro-navbar";
+import Logo from "@/assets/logo.png";
+import { Picture } from "astro:assets";
+import { languages, type Lang } from "@/i18n/ui";
+import { langs, localePath, switchLangPath, useTranslations } from "@/i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const menuitems = [
+  { title: t.nav.home, path: localePath(lang, "/") },
+  { title: t.nav.cases, path: localePath(lang, "/cases") },
+  { title: t.nav.about, path: localePath(lang, "/about") },
+  { title: t.nav.contact, path: localePath(lang, "/contact") },
+];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (path: string) => (path.replace(/\/$/, "") || "/") === currentPath;
+---
+
+<div class="sticky top-0 z-50 border-b border-night-100 bg-white/90 backdrop-blur">
+  <Container>
+    <header class="flex flex-col lg:flex-row justify-between items-center py-4">
+      <Astronav>
+        <div class="flex w-full lg:w-auto items-center justify-between">
+          <a href={localePath(lang, "/")} class="flex items-center">
+            <Picture src={Logo} alt="E-Vision GmbH" class="h-7 w-auto" />
+          </a>
+          <div class="block lg:hidden">
+            <MenuIcon class="w-5 h-5 text-night-800" />
+          </div>
+        </div>
+        <MenuItems class="hidden w-full lg:w-auto mt-2 lg:flex lg:mt-0">
+          <ul class="flex flex-col lg:flex-row lg:items-center lg:gap-1">
+            {
+              menuitems.map((item) => (
+                <li>
+                  <a
+                    href={item.path}
+                    class:list={[
+                      "flex lg:px-3 py-2 items-center text-sm transition-colors",
+                      isActive(item.path)
+                        ? "text-night-950 font-semibold"
+                        : "text-slate-600 hover:text-night-950",
+                    ]}>
+                    {item.title}
+                  </a>
+                </li>
+              ))
+            }
+            <li
+              class="mt-3 pt-3 border-t border-night-100 lg:mt-0 lg:pt-0 lg:border-t-0 lg:ml-4 lg:pl-4 lg:border-l lg:border-night-100">
+              <div class="flex items-center gap-1">
+                {
+                  langs.map((l) => (
+                    <a
+                      href={switchLangPath(Astro.url.pathname, l)}
+                      aria-label={languages[l]}
+                      class:list={[
+                        "px-2 py-1 rounded-md text-xs font-semibold uppercase tracking-wide transition-colors",
+                        l === lang
+                          ? "bg-night-950 text-white"
+                          : "text-slate-500 hover:bg-night-50 hover:text-night-950",
+                      ]}>
+                      {l === "zh" ? "中" : l}
+                    </a>
+                  ))
+                }
+              </div>
+            </li>
+          </ul>
+        </MenuItems>
+      </Astronav>
+    </header>
+  </Container>
+</div>

@@ -1,0 +1,65 @@
+---
+import { Picture } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import Container from "@/components/container.astro";
+import Sectionhead from "@/components/sectionhead.astro";
+import type { Lang } from "@/i18n/ui";
+import { localePath, useTranslations } from "@/i18n/utils";
+import { getServices, entryKey } from "@/i18n/content";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const services = await getServices(lang);
+---
+
+<section id="services" class="scroll-mt-24 py-24">
+  <Container>
+    <Sectionhead
+      kicker={t.services.kicker}
+      title={t.services.title}
+      desc={t.services.desc}
+    />
+    <div class="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        services.map((service) => (
+          <a
+            href={localePath(lang, `/services/${entryKey(service)}`)}
+            class="group flex flex-col overflow-hidden border border-night-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+            <div class="relative aspect-[3/2] overflow-hidden">
+              <Picture
+                src={service.data.cover}
+                alt={service.data.title}
+                widths={[400, 800]}
+                sizes="(max-width: 640px) 100vw, 400px"
+                format="avif"
+                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+              />
+              <div class="absolute bottom-3 left-3 flex h-10 w-10 items-center justify-center bg-accent-600">
+                <Icon name={service.data.icon} class="h-5 w-5 text-white" />
+              </div>
+            </div>
+            <div class="flex flex-1 flex-col p-6">
+              <h3 class="text-lg font-semibold text-night-950">
+                {service.data.title}
+              </h3>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
+                {service.data.summary}
+              </p>
+              <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-accent-600">
+                {t.services.readMore}
+                <Icon
+                  name="lucide:arrow-right"
+                  class="h-4 w-4 transition group-hover:translate-x-1"
+                />
+              </span>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </Container>
+</section>

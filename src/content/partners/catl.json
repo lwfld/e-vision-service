@@ -1,0 +1,7 @@
+{
+  "name": "CATL",
+  "alt": "CATL 宁德时代",
+  "logo": "../../assets/partners/catl.png",
+  "order": 1,
+  "shape": "stacked"
+}

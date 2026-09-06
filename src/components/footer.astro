@@ -1,19 +1,95 @@
-<footer class="my-20">
-  <p class="text-center text-sm text-slate-500">
-    Copyright © {new Date().getFullYear()} E-Vision Gmbh. All rights reserved.
-  </p>
-  <!--
-    Can we ask you a favor 🙏
-    Please keep this backlink on your website if possible.
-    or Purchase a commercial license from https://web3templates.com
-  -->
-  <p class="text-center text-xs text-slate-500 mt-1">
-    Made by <a
-      href="https://web3templates.com"
-      target="_blank"
-      rel="noopener"
-      class="hover:underline">
-      Web3Templates
-    </a>
-  </p>
+---
+import Container from "@/components/container.astro";
+import Logo from "@/assets/logo.png";
+import { Picture } from "astro:assets";
+import { site, addressLine } from "@/config/site";
+import type { Lang } from "@/i18n/ui";
+import { localePath, useTranslations } from "@/i18n/utils";
+import { getServices, entryKey } from "@/i18n/content";
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const services = await getServices(lang);
+
+const companyLinks = [
+  { title: t.nav.about, path: localePath(lang, "/about") },
+  { title: t.nav.cases, path: localePath(lang, "/cases") },
+  { title: t.nav.contact, path: localePath(lang, "/contact") },
+];
+---
+
+<footer class="bg-night-950 text-night-300 mt-24">
+  <Container>
+    <div class="grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-4">
+      <div class="lg:col-span-1">
+        <a href={localePath(lang, "/")} class="inline-block">
+          <Picture src={Logo} alt="E-Vision GmbH" class="h-7 w-auto invert" />
+        </a>
+        <p class="mt-4 text-sm leading-relaxed">{t.footer.blurb}</p>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-white">
+          {t.footer.services}
+        </h3>
+        <ul class="mt-4 space-y-2">
+          {
+            services.map((s) => (
+              <li>
+                <a
+                  href={localePath(lang, `/services/${entryKey(s)}`)}
+                  class="text-sm hover:text-white transition-colors">
+                  {s.data.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-white">
+          {t.footer.company}
+        </h3>
+        <ul class="mt-4 space-y-2">
+          {
+            companyLinks.map((l) => (
+              <li>
+                <a href={l.path} class="text-sm hover:text-white transition-colors">
+                  {l.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-white">
+          {t.footer.contact}
+        </h3>
+        <ul class="mt-4 space-y-3 text-sm">
+          <li class="flex items-start gap-2">
+            <Icon name="uil:map-marker" class="mt-0.5 h-4 w-4 shrink-0 text-accent-400" />
+            <span>{addressLine}</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon name="uil:envelope" class="mt-0.5 h-4 w-4 shrink-0 text-accent-400" />
+            <a href={`mailto:${site.email}`} class="hover:text-white transition-colors">
+              {site.email}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      class="flex flex-col items-center justify-between gap-3 border-t border-white/10 py-6 text-xs text-night-400 sm:flex-row">
+      <p>
+        © {new Date().getFullYear()}
+        {site.name}. {t.footer.rights} · {site.registerNo}
+      </p>
+    </div>
+  </Container>
 </footer>
